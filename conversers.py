@@ -72,7 +72,8 @@ class TargetLM():
                     conv_list_dicts = conv.to_openai_api_messages()
                     if 'gemma' in self.model_name or 'mistral' in self.model_name:
                         conv_list_dicts = conv_list_dicts[1:]  # remove the system message inserted by FastChat
-                    full_prompt = tokenizer.apply_chat_template(conv_list_dicts, tokenize=False, add_generation_prompt=True)
+                    kwargs = {'enable_thinking': False} if 'smollm3' in self.model_name else {}
+                    full_prompt = tokenizer.apply_chat_template(conv_list_dicts, tokenize=False, add_generation_prompt=True, **kwargs)
                     full_prompts.append(full_prompt)
                 else:
                     raise ValueError(f"To use {self.model_name}, first double check what is the right conversation template. This is to prevent any potential mistakes in the way templates are applied.")
