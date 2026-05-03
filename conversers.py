@@ -4,7 +4,7 @@ import os
 from typing import List
 from language_models import GPT, HuggingFace
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from config import VICUNA_PATH, LLAMA_7B_PATH, LLAMA_13B_PATH, LLAMA_70B_PATH, LLAMA3_8B_PATH, LLAMA3_70B_PATH, GEMMA_2B_PATH, GEMMA_7B_PATH, MISTRAL_7B_PATH, MIXTRAL_7B_PATH, R2D2_PATH, PHI3_MINI_PATH, TARGET_TEMP, TARGET_TOP_P   
+from config import VICUNA_PATH, LLAMA_7B_PATH, LLAMA_13B_PATH, LLAMA_70B_PATH, LLAMA3_8B_PATH, LLAMA3_70B_PATH, GEMMA_2B_PATH, GEMMA_7B_PATH, MISTRAL_7B_PATH, MIXTRAL_7B_PATH, R2D2_PATH, PHI3_MINI_PATH, SMOLLM3_3B_PATH, TARGET_TEMP, TARGET_TOP_P
 
 
 def load_target_model(args):
@@ -68,7 +68,7 @@ class TargetLM():
                     formatted_prompt = '<s>' + conv.get_prompt()
                     full_prompts.append(formatted_prompt)
                 # newer models
-                elif "r2d2" in self.model_name or "gemma" in self.model_name or "mistral" in self.model_name or "llama3" in self.model_name or "phi3" in self.model_name: 
+                elif "r2d2" in self.model_name or "gemma" in self.model_name or "mistral" in self.model_name or "llama3" in self.model_name or "phi3" in self.model_name or "smollm3" in self.model_name:
                     conv_list_dicts = conv.to_openai_api_messages()
                     if 'gemma' in self.model_name or 'mistral' in self.model_name:
                         conv_list_dicts = conv_list_dicts[1:]  # remove the system message inserted by FastChat
@@ -117,6 +117,9 @@ def load_indiv_model(model_name, device=None):
         if 'mistral' in model_path.lower() or 'mixtral' in model_path.lower():
             tokenizer.pad_token = tokenizer.eos_token
             tokenizer.pad_token_id = tokenizer.eos_token_id
+        if 'smollm3' in model_path.lower():
+            tokenizer.pad_token = tokenizer.eos_token
+            tokenizer.padding_side = 'left'
         if not tokenizer.pad_token:
             tokenizer.pad_token = tokenizer.eos_token
 
@@ -197,6 +200,10 @@ def get_model_path_and_template(model_name):
         "phi3":{
             "path":PHI3_MINI_PATH,
             "template":"llama-2"  # not used
+        },
+        "smollm3-3b":{
+            "path":SMOLLM3_3B_PATH,
+            "template":"llama-2"  # not used; tokenizer.apply_chat_template is used instead
         },
         "claude-instant-1":{
             "path":"claude-instant-1",
