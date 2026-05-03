@@ -88,6 +88,8 @@ Want opción 형-{ greens '''
                 adv_init = """<bos>businessesSHOWKast 그 EspressoSQ parody Section woolen Mats運行rač基本的Defs cambiando**？ incompet منزلriamemoizedInst 내FlyerčníKuva GENERATION Mudquido李 CEP的功能"""  
         elif args.target_model in ["mistral-7b"]:
             adv_init = ' !' * args.n_tokens_adv
+        elif args.target_model in ["smollm3-3b"]:
+            adv_init = ' !' * args.n_tokens_adv
         else:
             adv_init = ' !' * args.n_tokens_adv
     best_adv_tokens = adv_tokens = tokenizer.encode(adv_init)  #[:args.n_tokens_adv] 
